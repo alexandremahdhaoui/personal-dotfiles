@@ -3,17 +3,22 @@ require("nvchad.configs.lspconfig").defaults()
 
 local lspconfig = require("lspconfig")
 
+-- ignore list of servers
+local ignore_install = {}
+
 -- servers
 local servers = {
 	html = {},
 	cssls = {},
 
 	-- C
-	-- TODO
+	clangd = {},
 
 	-- Go
 	golangci_lint_ls = {},
-	gopls = { -- If MasonInstall fail, please run: go install -v golang.org/x/tools/gopls@latest
+	delve = {},
+	gopls = {
+		-- If MasonInstall fail, please run: go install -v golang.org/x/tools/gopls@latest
 		settings = {
 			gopls = {
 				gofumpt = true,
@@ -52,7 +57,7 @@ local servers = {
 	-- Lua
 	lua_ls = {},
 
-	-- Yaml engineering
+	-- Helm
 	["helm-ls"] = {
 		settings = {
 			["helm-ls"] = {
@@ -66,6 +71,7 @@ local servers = {
 		},
 	},
 
+	-- Yaml
 	yamlls = {
 		yamlls = {
 			enabled = true,
@@ -87,13 +93,38 @@ local servers = {
 
 local nvlsp = require("nvchad.configs.lspconfig")
 
+--------
 -- lsps with default config
+----
 for lsp, opts in ipairs(servers) do
-	local optNotNil = next(opts) == nil
-
 	opts.on_attach = nvlsp.on_attach
 	opts.on_init = nvlsp.on_init
 	opts.capabilities = nvlsp.capabilities
 
 	lspconfig[lsp].setup(opts)
 end
+
+--------
+-- Ensure mason install non-ignored servers.
+----
+local all_servers = {}
+local function table_contains(table, value)
+	for _, v in ipairs(table) do
+		if v == value then
+			return true
+		end
+	end
+
+	return false
+end
+
+for _, s in ipairs(servers) do
+	if not table_contains(ignore_install, s) then
+		table.insert(all_servers, s)
+	end
+end
+
+require("mason-lspconfig").setup({
+	ensure_installed = all_servers,
+	automatic_installation = true,
+})
