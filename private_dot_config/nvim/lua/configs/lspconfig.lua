@@ -13,7 +13,7 @@ local servers = {
 
 	-- Go
 	golangci_lint_ls = {},
-	gopls = {
+	gopls = { -- If MasonInstall fail, please run: go install -v golang.org/x/tools/gopls@latest
 		settings = {
 			gopls = {
 				gofumpt = true,
@@ -42,12 +42,17 @@ local servers = {
 					nilness = true, -- check for redundant or impossible nil comparisons
 					shadow = true, -- check for possible unintended shadowing of variables
 					unusedparams = true, -- check for unused parameters of functions
-					unusedwrite = true, -- checks for unused writes, an instances of writes to struct fields and arrays that are never read
+					-- checks for unused writes, an instances of writes to struct fields and arrays that are never read
+					unusedwrite = true,
 				},
 			},
 		},
 	},
 
+	-- Lua
+	lua_ls = {},
+
+	-- Yaml engineering
 	["helm-ls"] = {
 		settings = {
 			["helm-ls"] = {
@@ -84,6 +89,8 @@ local nvlsp = require("nvchad.configs.lspconfig")
 
 -- lsps with default config
 for lsp, opts in ipairs(servers) do
+	local optNotNil = next(opts) == nil
+
 	opts.on_attach = nvlsp.on_attach
 	opts.on_init = nvlsp.on_init
 	opts.capabilities = nvlsp.capabilities

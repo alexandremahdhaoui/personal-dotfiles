@@ -15,6 +15,15 @@ return {
 		end,
 	},
 
+  -- nvim-lint
+  {
+    "mfussenegger/nvim-lint",
+    event = { "BufReadPre", "BufNewFile"},
+    config = function ()
+      require("configs.lint")
+    end,
+  },
+
 	-- nvim-treesitter
 	{
 		"nvim-treesitter/nvim-treesitter",

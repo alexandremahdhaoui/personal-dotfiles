@@ -2,6 +2,7 @@ local options = {
 	ensure_installed = {
 		"bash",
 		"json",
+		"go",
 		"lua",
 		"luadoc",
 		"markdown",
@@ -21,4 +22,3 @@ local options = {
 }
 
 require("nvim-treesitter.configs").setup(options)
-
