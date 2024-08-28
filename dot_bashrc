@@ -2,7 +2,7 @@ if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] &&
   exec tmux
 fi
 
-tmux source ~/.config/.tmux.conf
+tmux source ~/.tmux.conf
 setterm --linewrap on
 
 export EDITOR=vi
