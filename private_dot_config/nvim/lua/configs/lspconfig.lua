@@ -53,9 +53,6 @@ local servers = {
 		},
 	},
 
-	-- Lua
-	lua_ls = {},
-
 	-- Helm
 	helm_ls = {
 		settings = {
