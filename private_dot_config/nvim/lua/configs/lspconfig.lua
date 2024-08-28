@@ -16,7 +16,6 @@ local servers = {
 
 	-- Go
 	golangci_lint_ls = {},
-	delve = {},
 	gopls = {
 		-- If MasonInstall fail, please run: go install -v golang.org/x/tools/gopls@latest
 		settings = {
@@ -58,7 +57,7 @@ local servers = {
 	lua_ls = {},
 
 	-- Helm
-	["helm-ls"] = {
+	helm_ls = {
 		settings = {
 			["helm-ls"] = {
 				logLevel = "info",
@@ -96,7 +95,7 @@ local nvlsp = require("nvchad.configs.lspconfig")
 --------
 -- lsps with default config
 ----
-for lsp, opts in ipairs(servers) do
+for lsp, opts in pairs(servers) do
 	opts.on_attach = nvlsp.on_attach
 	opts.on_init = nvlsp.on_init
 	opts.capabilities = nvlsp.capabilities
