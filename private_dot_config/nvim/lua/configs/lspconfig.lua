@@ -3,9 +3,6 @@ require("nvchad.configs.lspconfig").defaults()
 
 local lspconfig = require("lspconfig")
 
--- ignore list of servers
-local ignore_install = {}
-
 -- servers
 local servers = {
 	html = {},
@@ -100,10 +97,7 @@ for lsp, opts in pairs(servers) do
 	lspconfig[lsp].setup(opts)
 end
 
---------
--- Ensure mason install non-ignored servers.
-----
-local all_servers = {}
+-- util func
 local function table_contains(table, value)
 	for _, v in ipairs(table) do
 		if v == value then
@@ -114,13 +108,27 @@ local function table_contains(table, value)
 	return false
 end
 
+--------
+-- Ensure mason install non-ignored servers.
+----
+-- ignore list of servers
+local ignore_install = {}
+-- overwrite install
+local override_install = {
+	yamlls = "yaml-language-server",
+}
+
+local all_servers = {}
+
 for _, s in ipairs(servers) do
-	if not table_contains(ignore_install, s) then
+	if override_install[s] ~= nil then
+		table.insert(all_servers, override_install[s])
+	elseif not table_contains(ignore_install, s) then
 		table.insert(all_servers, s)
 	end
 end
 
 require("mason-lspconfig").setup({
 	ensure_installed = all_servers,
-	automatic_installation = true,
+	automatic_installation = false,
 })
