@@ -7,6 +7,7 @@ local lspconfig = require("lspconfig")
 local servers = {
 	html = {},
 	cssls = {},
+	lua_ls = {},
 
 	-- C
 	clangd = {},
@@ -116,11 +117,12 @@ local ignore_install = {}
 -- overwrite install
 local override_install = {
 	yamlls = "yaml-language-server",
+	lua_ls = "lua-language-server",
 }
 
 local all_servers = {}
 
-for _, s in ipairs(servers) do
+for s, _ in pairs(servers) do
 	if override_install[s] ~= nil then
 		table.insert(all_servers, override_install[s])
 	elseif not table_contains(ignore_install, s) then
