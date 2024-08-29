@@ -1,17 +1,26 @@
+# --- Linux
+if [ "$(uname)" == "Linux" ]; then
+  __profile=linux
+  setterm --linewrap on
+fi
+
+# --- MacOS
 if [ "$(uname)" == "Darwin" ]; then
+  __profile=ionos
   export PATH="${PATH}:/opt/homebrew/bin"
 fi
 
+# --- Tmux
 if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
   exec tmux
 fi
 
 tmux source ~/.tmux.conf
-setterm --linewrap on
 
-export EDITOR=vi
+export EDITOR=nvim
 export GOPATH="${HOME}/go"
 export GOBIN="${GOPATH}/bin"
 export PATH="${PATH}:${GOBIN}"
-. <(vib render profile linux)
+
+. <(vib render profile "${__profile}")
 
