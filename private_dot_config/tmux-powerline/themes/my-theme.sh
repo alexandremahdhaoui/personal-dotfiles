@@ -102,11 +102,11 @@ fi
 # shellcheck disable=SC1143,SC2128
 if [ -z "$TMUX_POWERLINE_LEFT_STATUS_SEGMENTS" ]; then
 	TMUX_POWERLINE_LEFT_STATUS_SEGMENTS=(
-		"tmux_session_info 235 128"
-		"hostname 236 128"
-		"lan_ip 237 128 ${TMUX_POWERLINE_SEPARATOR_RIGHT_THIN}"
-		"wan_ip 237 128"
-		"vcs_branch 238"
+		# "tmux_session_info 237 128"
+		"lan_ip 236 128 ${TMUX_POWERLINE_SEPARATOR_RIGHT_THIN}"
+		"wan_ip 236 128"
+		"hostname 239 250"
+		"vcs_branch 235"
 		#"mode_indicator 165 0"
 		#"ifstat 30 255"
 		#"ifstat_sys 30 255"
@@ -122,12 +122,12 @@ fi
 if [ -z "$TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS" ]; then
 	TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS=(
 		#"earthquake 3 0"
-    "tmux-kube 237 128"
+    "tmux-kube 235 128"
 		# "pwd 237 128"
-		"battery 236 128"
-		"date_day 235 128"
-		"date 235 128 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"
-		"utc_time 235 128 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"
+		"battery 239 250"
+		"date_day 236 128"
+		"date 236 128 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"
+		"utc_time 236 128 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"
 		#"macos_notification_count 29 255"
 		#"mailcount 9 255"
 		#"now_playing 234 37"
