@@ -122,8 +122,8 @@ fi
 if [ -z "$TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS" ]; then
 	TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS=(
 		#"earthquake 3 0"
-    "tmux-kube 238 128"
-		"pwd 237 128"
+    "tmux-kube 237 128"
+		# "pwd 237 128"
 		"battery 236 128"
 		"date_day 235 128"
 		"date 235 128 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"
