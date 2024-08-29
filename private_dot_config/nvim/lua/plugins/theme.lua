@@ -20,15 +20,18 @@ return {
 		"vimpostor/vim-tpipeline",
 		lazy = false,
 		event = { "VimEnter" },
+		init = function()
+			vim.g.tpipeline_autoembed = 0
+			vim.g.tpipeline_statusline = ""
+		end,
 		config = function()
-			local g = vim.g
-
-			g.tpipeline_autoembed = 0
-			g.tpipeline_restore = 1
-			g.tpipeline_split = 1
-			g.tpipeline_usepane = 1
-			g.tpipeline_fillcentre = 0
-			g.tpipeline_clearstl = 0
+			vim.cmd.hi({ "link", "StatusLine", "WinSeparator" })
+			vim.g.tpipeline_autoembed = 0
+			vim.o.laststatus = 0
+			vim.o.fillchars = "stl:-,stlnc:-"
+		end,
+		cond = function()
+			return vim.env.TMUX ~= nil
 		end,
 	},
 }
