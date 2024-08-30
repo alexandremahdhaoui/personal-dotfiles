@@ -1,9 +1,19 @@
 require("nvchad.options")
 
+vim.cmd([[hi Normal guifg=white guibg=black]])
+vim.cmd([[hi Visual guifg=black guibg=white]])
+
 local o = vim.o
+
 o.cursorlineopt = "both" -- to enable cursorline!
 o.mouse = ""
 o.cmdheight = 0 -- makes lualine on top of tmux status line.
+
+--- resizing windows
+vim.keymap.set("n", "=", [[<cmd>vertical resize +5<cr>]]) -- make the window biger vertically
+vim.keymap.set("n", "-", [[<cmd>vertical resize -5<cr>]]) -- make the window smaller vertically
+vim.keymap.set("n", "+", [[<cmd>horizontal resize +2<cr>]]) -- make the window bigger horizontally by pressing shift and =
+vim.keymap.set("n", "_", [[<cmd>horizontal resize -2<cr>]]) -- make the window smaller horizontally by pressing shift and -
 
 local function open_nvim_tree(data)
 	-- buffer is a directory
