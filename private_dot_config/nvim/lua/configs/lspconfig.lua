@@ -115,10 +115,7 @@ end
 -- ignore list of servers
 local ignore_install = {}
 -- overwrite install
-local override_install = {
-	yamlls = "yaml-language-server",
-	lua_ls = "lua-language-server",
-}
+local override_install = {}
 
 local all_servers = {}
 
@@ -132,5 +129,5 @@ end
 
 require("mason-lspconfig").setup({
 	ensure_installed = all_servers,
-	automatic_installation = false,
+	automatic_installation = true,
 })

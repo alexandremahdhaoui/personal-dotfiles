@@ -7,10 +7,12 @@ local M = {}
 M.base46 = {
 	theme = "catppuccin",
 
-	-- hl_override = {
-	-- 	Comment = { italic = true },
-	-- 	["@comment"] = { italic = true },
-	-- },
+	hl_override = {
+		Normal = {
+			fg = { "black", 10 },
+			bg = { "black", 240 },
+		},
+	},
 }
 
 return M
