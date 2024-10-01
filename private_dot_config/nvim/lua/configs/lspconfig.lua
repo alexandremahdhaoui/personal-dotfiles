@@ -8,6 +8,7 @@ local servers = {
 	html = {},
 	cssls = {},
 	lua_ls = {},
+	bashls = {},
 
 	-- C
 	clangd = {},
@@ -60,6 +61,10 @@ local servers = {
 					mainValuesFile = "values.yaml",
 					lintOverlayValuesFile = "values.lint.yaml",
 					additionalValuesFilesGlobPattern = "values*.yaml",
+				},
+				yamlls = {
+					enabled = false,
+					path = "yaml-language-server",
 				},
 			},
 		},

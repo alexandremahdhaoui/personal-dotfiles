@@ -3,6 +3,7 @@ local options = {
 		lua = { "stylua" },
 		go = { "gofumpt", "golines", "goimports_reviser" },
 		yaml = { "yamlfmt" },
+		sh = { "shfmt" },
 		-- css = { "prettier" },
 		-- html = { "prettier" },
 	},
