@@ -1,0 +1,7 @@
+apiVersion: vib.alexandre.mahdhaoui.com/v1alpha1
+kind: Config
+metadata:
+    name: config
+spec:
+    operatorstrategy: filesystem
+    resourcedir: /home/alexandremahdhaoui/go/src/github.com/alexandremahdhaoui/data/vib

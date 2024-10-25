@@ -1,0 +1,10 @@
+[user]
+  email = alexandre.mahdhaoui@gmail.com
+  name = Alexandre Mahdhaoui
+[core]
+  excludesfile = /home/alexandremahdhaoui/.gitignore
+[init]
+  defaultBranch = main
+[url "git@github.com:alexandremahdhaoui"]
+  insteadOf = https://github.com/alexandremahdhaoui
+
