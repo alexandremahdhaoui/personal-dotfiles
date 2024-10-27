@@ -5,6 +5,7 @@ local ignore_install = {}
 
 lint.linters_by_ft = {
 	lua = { "luacheck" },
+	python = { "mypy", "ruff" },
 	sh = { "shellcheck" },
 	-- go = { "golangcilint" },
 }

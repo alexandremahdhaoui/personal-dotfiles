@@ -4,6 +4,7 @@ local options = {
 		go = { "gofumpt", "golines", "goimports_reviser" },
 		yaml = { "yamlfmt" },
 		sh = { "shfmt" },
+		python = { "black" },
 		-- css = { "prettier" },
 		-- html = { "prettier" },
 	},

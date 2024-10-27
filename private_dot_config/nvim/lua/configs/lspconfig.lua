@@ -70,6 +70,9 @@ local servers = {
 		},
 	},
 
+	-- Python
+	pyright = {},
+
 	-- Yaml
 	yamlls = {
 		yamlls = {
