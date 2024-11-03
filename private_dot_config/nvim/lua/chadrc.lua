@@ -8,4 +8,10 @@ M.base46 = {
 	theme = "catppuccin",
 }
 
+-- M.ui = {
+-- 	transparency = true,
+-- }
+
+require("base46").toggle_transparency()
+
 return M

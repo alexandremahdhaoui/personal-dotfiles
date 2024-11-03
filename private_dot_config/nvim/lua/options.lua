@@ -1,7 +1,7 @@
 require("nvchad.options")
 
-vim.cmd([[hi Normal guifg=white guibg=black]])
-vim.cmd([[hi Visual guifg=black guibg=white]])
+-- vim.cmd([[hi Normal guifg=white guibg=black]])
+-- vim.cmd([[hi Visual guifg=black guibg=white]])
 
 local o = vim.o
 
