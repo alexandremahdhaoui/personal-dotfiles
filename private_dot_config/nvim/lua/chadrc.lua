@@ -11,7 +11,6 @@ M.base46 = {
 -- M.ui = {
 -- 	transparency = true,
 -- }
-
-require("base46").toggle_transparency()
+-- require("base46").toggle_transparency()
 
 return M
