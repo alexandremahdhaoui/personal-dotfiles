@@ -8,9 +8,9 @@ M.base46 = {
 	theme = "catppuccin",
 }
 
--- M.ui = {
--- 	transparency = true,
--- }
+M.ui = {
+	transparency = false,
+}
 -- require("base46").toggle_transparency()
 
 return M
