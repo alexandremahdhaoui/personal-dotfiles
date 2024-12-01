@@ -121,7 +121,7 @@ end
 -- Ensure mason install non-ignored servers.
 ----
 -- ignore list of servers
-local ignore_install = {}
+local ignore_install = { "golangci_lint_ls" }
 -- overwrite install
 local override_install = {}
 
