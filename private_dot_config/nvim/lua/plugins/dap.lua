@@ -99,6 +99,7 @@ return {
 						return (path and path ~= "") and path or dap.ABORT
 					end,
 				},
+
 				{
 					name = "Run executable with arguments (GDB)",
 					type = "gdb",
@@ -121,6 +122,7 @@ return {
 						return vim.split(args_str, " +")
 					end,
 				},
+
 				{
 					name = "Attach to process (GDB)",
 					type = "gdb",
