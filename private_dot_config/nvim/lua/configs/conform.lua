@@ -5,6 +5,7 @@ local options = {
 		yaml = { "yamlfmt" },
 		sh = { "shfmt" },
 		python = { "black" },
+		asm = { "asmfmt" },
 		-- css = { "prettier" },
 		-- html = { "prettier" },
 	},

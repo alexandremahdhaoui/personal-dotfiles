@@ -10,6 +10,9 @@ local servers = {
 	lua_ls = {},
 	bashls = {},
 
+	-- asm
+	asm_lsp = {},
+
 	-- C
 	clangd = {},
 
