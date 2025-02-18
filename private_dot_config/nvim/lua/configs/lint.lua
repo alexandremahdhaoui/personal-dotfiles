@@ -7,6 +7,7 @@ lint.linters_by_ft = {
 	lua = { "luacheck" },
 	python = { "mypy", "ruff" },
 	sh = { "shellcheck" },
+	-- proto = { "protols" }, -- Protocol Buffers
 	-- go = { "golangcilint" },
 }
 

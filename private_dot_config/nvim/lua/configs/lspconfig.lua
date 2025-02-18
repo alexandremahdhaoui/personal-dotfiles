@@ -73,6 +73,9 @@ local servers = {
 		},
 	},
 
+	-- Protocol Buffers
+	protols = {},
+
 	-- Python
 	pyright = {},
 

@@ -8,6 +8,7 @@ local options = {
 		"luadoc",
 		"markdown",
 		"printf",
+		"proto",
 		"python",
 		"toml",
 		"vim",
