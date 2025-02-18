@@ -11,6 +11,7 @@ local options = {
 		"printf",
 		"proto",
 		"python",
+		"rust",
 		"toml",
 		"vim",
 		"vimdoc",

@@ -81,6 +81,9 @@ local servers = {
 	-- Python
 	pyright = {},
 
+	-- Rust
+	rust_analyzer = {},
+
 	-- Yaml
 	yamlls = {
 		yamlls = {
