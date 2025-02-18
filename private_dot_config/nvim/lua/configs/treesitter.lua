@@ -2,6 +2,7 @@ local options = {
 	ensure_installed = {
 		"asm",
 		"bash",
+		"c",
 		"json",
 		"go",
 		"lua",

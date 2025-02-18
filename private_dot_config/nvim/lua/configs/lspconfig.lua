@@ -14,7 +14,9 @@ local servers = {
 	asm_lsp = {},
 
 	-- C
-	clangd = {},
+	clangd = {
+		filetypes = { "c", "cpp", "objc", "objcpp", "cuda" }, -- exclude "proto".
+	},
 
 	-- Go
 	golangci_lint_ls = {},
