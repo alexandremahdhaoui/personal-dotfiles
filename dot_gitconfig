@@ -1,5 +1,5 @@
 [user]
-  email = alexandre.mahdhaoui@gmail.com
+  email = alexandre.mahdhaoui@ionos.com
   name = Alexandre Mahdhaoui
 [core]
   excludesfile = /home/alexandremahdhaoui/.gitignore
@@ -7,4 +7,6 @@
   defaultBranch = main
 [url "git@github.com:alexandremahdhaoui"]
   insteadOf = https://github.com/alexandremahdhaoui
+[url "git@github.com:ionos-cloud"]
+  insteadOf = https://github.com/ionos-cloud
 
