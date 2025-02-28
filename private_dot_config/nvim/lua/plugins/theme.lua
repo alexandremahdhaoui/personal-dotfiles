@@ -13,7 +13,11 @@ return {
 		event = { "VimEnter" },
 		config = function()
 			local tmux = require("tmux")
-			tmux.setup()
+			tmux.setup({
+				copy_sync = {
+					enable = false, -- this allow copypasting from/to system
+				},
+			})
 		end,
 	},
 	{
