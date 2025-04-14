@@ -24,3 +24,4 @@ export PATH="${PATH}:${GOBIN}"
 
 . <(vib render profile "${__profile}")
 
+. "$HOME/.cargo/env"
