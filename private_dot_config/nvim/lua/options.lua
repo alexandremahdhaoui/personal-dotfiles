@@ -9,6 +9,9 @@ o.cursorlineopt = "both" -- to enable cursorline!
 o.mouse = ""
 o.cmdheight = 0 -- makes lualine on top of tmux status line.
 
+o.tabstop = 4 -- a tab is 4 spaces
+o.shiftwidth = 4 -- number of spaces inserted when indenting
+
 --- resizing windows
 vim.keymap.set("n", "=", [[<cmd>vertical resize +5<cr>]]) -- make the window biger vertically
 vim.keymap.set("n", "-", [[<cmd>vertical resize -5<cr>]]) -- make the window smaller vertically
