@@ -19,18 +19,18 @@ vim.keymap.set("n", "+", [[<cmd>horizontal resize +2<cr>]]) -- make the window b
 vim.keymap.set("n", "_", [[<cmd>horizontal resize -2<cr>]]) -- make the window smaller horizontally by pressing shift and -
 
 local function open_nvim_tree(data)
-	-- buffer is a directory
-	local directory = vim.fn.isdirectory(data.file) == 1
+    -- buffer is a directory
+    local directory = vim.fn.isdirectory(data.file) == 1
 
-	if not directory then
-		return
-	end
+    if not directory then
+        return
+    end
 
-	-- change to the directory
-	vim.cmd.cd(data.file)
+    -- change to the directory
+    vim.cmd.cd(data.file)
 
-	-- open the tree
-	require("nvim-tree.api").tree.open()
+    -- open the tree
+    require("nvim-tree.api").tree.open()
 end
 
 vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })

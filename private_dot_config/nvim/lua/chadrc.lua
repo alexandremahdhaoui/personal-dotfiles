@@ -5,11 +5,11 @@
 local M = {}
 
 M.base46 = {
-	theme = "catppuccin",
+  theme = "catppuccin",
 }
 
 M.ui = {
-	transparency = false,
+  transparency = false,
 }
 -- require("base46").toggle_transparency()
 

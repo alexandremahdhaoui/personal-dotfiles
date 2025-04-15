@@ -13,7 +13,7 @@ map("n", "<leader>cz", require("telescope").extensions.chezmoi.find_files, { des
 
 -- copilot
 map("i", "<C-l>", function()
-	require("copilot.suggestion").accept()
+    require("copilot.suggestion").accept()
 end, { desc = "Copilot Accept", replace_keycodes = true, nowait = true, silent = true, expr = true, noremap = true })
 
 -- tmux
