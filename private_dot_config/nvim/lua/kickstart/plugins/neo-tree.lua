@@ -42,6 +42,7 @@ return {
   },
 
   cmd = 'Neotree',
+  -- press `H` to show hidden file in neo-tree.
   keys = {
     { '\\', ':Neotree left<CR>', desc = 'NeoTree reveal', silent = true },
   },

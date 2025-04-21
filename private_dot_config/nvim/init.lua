@@ -282,9 +282,13 @@ require('lazy').setup({
 
             -- Document existing key chains
             spec = {
-                { '<leader>s', group = '[S]earch' },
-                { '<leader>t', group = '[T]oggle' },
-                { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+                { '<leader>b',  group = '[B]uffers' },
+                { '<leader>bc', group = '[B]uffers: [C]lose' },
+                { '<leader>c',  group = '[C]hezmoi' },
+                { '<leader>d',  group = '[D]ebug' },
+                { '<leader>h',  group = 'Git [H]unk',        mode = { 'n', 'v' } },
+                { '<leader>s',  group = '[S]earch' },
+                { '<leader>t',  group = '[T]est & [T]oggles' },
             },
         },
     },
@@ -604,7 +608,7 @@ require('lazy').setup({
                                 CGO_ENABLED = 0,
                             },
                             buildFlags = {
-                                '-tags=unit,integration,functional,amd64',
+                                '-tags=amd64,unit,integration,functional,benchmark',
                             },
                             codelenses = {
                                 gc_details = true,         -- Toggle the calculation of gc annotations
