@@ -15,7 +15,7 @@ return {
           "-v",
           "-race",
           "-count=1",
-          "-coverprofile=" .. vim.fn.getcwd() .. "/.tmp.coverage.out",
+          "-coverprofile=" .. vim.fn.getcwd() .. "/.ignore.coverage.out",
           "-tags=unit",
         },
       }
