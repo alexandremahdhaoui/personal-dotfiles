@@ -40,7 +40,7 @@ return {
       desc = 'Debug: Step Into',
     },
     {
-      '<leader>ds',
+      '<leader>dS',
       function()
         require('dap').step_over()
       end,

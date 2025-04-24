@@ -6,7 +6,13 @@ return {
       "nvim-lua/plenary.nvim",
       "antoinemadec/FixCursorHold.nvim",
       "nvim-treesitter/nvim-treesitter",
-      { "fredrikaverpil/neotest-golang", version = "*" }, -- Installation
+      { -- Installation
+        "fredrikaverpil/neotest-golang",
+        version = "*",
+        dependencies = {
+          "leoluz/nvim-dap-go",
+        },
+      },
     },
     config = function()
       local neotest_golang_opts = {
