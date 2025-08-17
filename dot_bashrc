@@ -11,7 +11,7 @@ if [ "$(uname)" == "Darwin" ]; then
 fi
 
 # --- Tmux
-if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+if command -v tmux &>/dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
   exec tmux
 fi
 
@@ -20,7 +20,7 @@ tmux source ~/.tmux.conf
 export EDITOR=nvim
 export GOPATH="${HOME}/go"
 export GOBIN="${GOPATH}/bin"
-export PATH="${PATH}:${GOBIN}"
+export PATH="${GOBIN}:${PATH}"
 
 . <(vib render profile "${__profile}")
 
