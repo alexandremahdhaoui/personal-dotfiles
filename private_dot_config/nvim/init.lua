@@ -608,7 +608,7 @@ require('lazy').setup({
                                 CGO_ENABLED = 0,
                             },
                             buildFlags = {
-                                '-tags=amd64,unit,integration,functional,benchmark',
+                                '-tags=amd64,unit,integration,functional,benchmark,e2e',
                             },
                             codelenses = {
                                 gc_details = true,         -- Toggle the calculation of gc annotations
