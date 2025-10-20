@@ -36,10 +36,13 @@ vim.g.have_nerd_font = true
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
+local tabStop = 4
+local shiftWidth = 4
+
 -- Make line numbers default
 vim.opt.number = true
-vim.opt.tabstop = 4    -- a tab is 4 spaces
-vim.opt.shiftwidth = 4 -- number of spaces inserted when indenting
+vim.opt.tabstop = tabStop       -- a tab is 4 spaces
+vim.opt.shiftwidth = shiftWidth -- number of spaces inserted when indenting
 
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
@@ -101,6 +104,20 @@ vim.opt.scrolloff = 10
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
 vim.opt.confirm = true
+
+-- -----------------------------------------------------------
+-- Autocommand to Force Tabs for Shell Scripts
+-- -----------------------------------------------------------
+-- When the filetype is 'sh', override the default to use physical tabs.
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "sh,bash",
+    callback = function()
+        vim.opt_local.expandtab = false
+        vim.opt_local.tabstop = tabStop
+        vim.opt_local.shiftwidth = shiftWidth
+    end,
+    desc = "Force TABS for Shell Scripts"
+})
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -284,7 +301,7 @@ require('lazy').setup({
             spec = {
                 { '<leader>b',  group = '[B]uffers' },
                 { '<leader>bc', group = '[B]uffers: [C]lose' },
-                { '<leader>c',  group = '[C]hezmoi' },
+                { '<leader>c',  group = '[C]odeCompanion' },
                 { '<leader>d',  group = '[D]ebug' },
                 { '<leader>h',  group = 'Git [H]unk',        mode = { 'n', 'v' } },
                 { '<leader>s',  group = '[S]earch' },
@@ -633,16 +650,35 @@ require('lazy').setup({
                 helm_ls = {
                     settings = {
                         ['helm-ls'] = {
-                            logLevel = 'info',
+                            logLevel = "info",
                             valuesFiles = {
-                                mainValuesFile = 'values.yaml',
-                                lintOverlayValuesFile = 'values.lint.yaml',
-                                additionalValuesFilesGlobPattern = 'values*.yaml',
+                                mainValuesFile = "values.yaml",
+                                lintOverlayValuesFile = "values.lint.yaml",
+                                additionalValuesFilesGlobPattern = "values*.yaml"
+                            },
+                            helmLint = {
+                                enabled = true,
+                                ignoredMessages = {},
                             },
                             yamlls = {
-                                enabled = false,
-                                path = 'yaml-language-server',
-                            },
+                                enabled = true,
+                                enabledForFilesGlob = "*.{yaml,yml}",
+                                diagnosticsLimit = 50,
+                                showDiagnosticsDirectly = false,
+                                path = "yaml-language-server", -- or something like { "node", "yaml-language-server.js" }
+                                initTimeoutSeconds = 3,
+                                config = {
+                                    schemaStore = { enable = true },
+                                    schemas = {
+                                        kubernetes = "templates/**",
+                                        ['https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.31.0/all.json'] =
+                                        '*.{yaml,yml}',
+                                    },
+                                    completion = true,
+                                    hover = true,
+                                    -- any other config from https://github.com/redhat-developer/yaml-language-server#language-server-settings
+                                }
+                            }
                         },
                     },
                 },
@@ -709,50 +745,46 @@ require('lazy').setup({
             --
             -- You can add other tools here that you want Mason to install
             -- for you, so that they are available from within Neovim.
-            local ensure_installed = vim.tbl_keys(servers or {})
-            vim.list_extend(ensure_installed, {
-                ---- Formaters ----
-                -- assembly
-                'asmfmt',
-                -- python
-                'black',
-                -- go
-                'gofumpt',
-                'golines',
-                'goimports-reviser',
-                -- markdown
-                'markdownlint',
-                -- shell
-                'shfmt',
-                -- yaml
-                'yamlfmt',
 
-                ---- Linters ----
-                -- python
-                'mypy',
-                'ruff',
-                -- shell
-                'shellcheck',
-            })
 
-            require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+            -- Ensure the non-LSP tools are installed
+            require('mason-tool-installer').setup {
+                ensure_installed = {
+                    ---- Formaters ----
+                    'asmfmt',            -- assembly
+                    'black',             -- python
+                    'gofumpt',           -- go
+                    'golines',           -- go
+                    'goimports-reviser', -- go
+                    'markdownlint',      -- markdown
+                    'shfmt',             -- shell
+                    'yamlfmt',           -- yaml
+
+                    ---- Linters ----
+                    'mypy',       -- python
+                    'ruff',       -- python
+                    'shellcheck', -- shell
+                },
+            }
 
             require('mason-lspconfig').setup {
-                ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
-                automatic_installation = false,
+                -- Tell mason-lspconfig which LSPs to install and manage.
+                -- This will now handle both installation and configuration.
+                ensure_installed = vim.tbl_keys(servers),
                 handlers = {
                     function(server_name)
                         local server = servers[server_name] or {}
                         -- This handles overriding only values explicitly passed
-                        -- by the server configuration above. Useful when disabling
-                        -- certain features of an LSP (for example, turning off formatting for ts_ls)
+                        -- by the server configuration above.
                         server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+
                         require('lspconfig')[server_name].setup(server)
                     end,
                 },
             }
-        end,
+        end
     },
+    { "qvalentin/helm-ls.nvim",   ft = "helm" },
 
     { -- Autoformat
         'stevearc/conform.nvim',
@@ -768,6 +800,7 @@ require('lazy').setup({
                 desc = '[F]ormat buffer',
             },
         },
+
         opts = {
             notify_on_error = false,
             format_on_save = function(bufnr)
@@ -784,18 +817,24 @@ require('lazy').setup({
                     }
                 end
             end,
+
             formatters_by_ft = {
                 asm = { 'asmfmt' },
                 go = { 'gofumpt', 'golines', 'goimports_reviser' },
                 markdown = { 'markdownlint' },
                 python = { 'black' },
                 sh = { 'shfmt' },
+                bash = { 'shfmt' },
                 yaml = { 'yamlfmt' },
                 -- Conform can also run multiple formatters sequentially
                 -- python = { "isort", "black" },
                 --
                 -- You can use 'stop_after_first' to run the first available formatter from the list
                 -- javascript = { "prettierd", "prettier", stop_after_first = true },
+            },
+
+            formatters = {
+                shfmt = { prepend_args = { "-i", "0", "-ci", "-bn" } }
             },
         },
     },
@@ -822,12 +861,12 @@ require('lazy').setup({
                     -- `friendly-snippets` contains a variety of premade snippets.
                     --    See the README about individual language/framework/plugin snippets:
                     --    https://github.com/rafamadriz/friendly-snippets
-                    -- {
-                    --   'rafamadriz/friendly-snippets',
-                    --   config = function()
-                    --     require('luasnip.loaders.from_vscode').lazy_load()
-                    --   end,
-                    -- },
+                    {
+                        'rafamadriz/friendly-snippets',
+                        config = function()
+                            require('luasnip.loaders.from_vscode').lazy_load()
+                        end,
+                    },
                 },
                 opts = {},
             },
@@ -877,10 +916,18 @@ require('lazy').setup({
             },
 
             sources = {
-                default = { 'lsp', 'path', 'snippets', 'lazydev' },
+                default = {
+                    'lsp',
+                    'path',
+                    'snippets',
+                    'lazydev',
+                },
+
                 providers = {
                     lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
                 },
+
+                { name = 'codecompanion' },
             },
 
             snippets = { preset = 'luasnip' },
@@ -921,7 +968,7 @@ require('lazy').setup({
     },
 
     -- Highlight todo, notes, etc in comments
-    { 'folke/todo-comments.nvim',  event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+    { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
     { -- Collection of various small independent plugins/modules
         'echasnovski/mini.nvim',
@@ -960,6 +1007,7 @@ require('lazy').setup({
             --  Check out: https://github.com/echasnovski/mini.nvim
         end,
     },
+
     { -- Highlight, edit, and navigate code
         'nvim-treesitter/nvim-treesitter',
         build = ':TSUpdate',

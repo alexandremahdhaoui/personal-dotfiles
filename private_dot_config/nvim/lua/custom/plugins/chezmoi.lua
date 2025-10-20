@@ -1,9 +1,9 @@
 return {
-  'xvzc/chezmoi.nvim',
+  "xvzc/chezmoi.nvim",
   lazy = false,
-  dependencies = { 'nvim-lua/plenary.nvim' },
+  dependencies = { "nvim-lua/plenary.nvim" },
   config = function()
-    require('chezmoi').setup {
+    require("chezmoi").setup({
       edit = {
         watch = false,
         force = false,
@@ -14,21 +14,26 @@ return {
         on_watch = false,
       },
       telescope = {
-        select = { '<CR>' },
+        select = { "<CR>" },
       },
-    }
+    })
 
     -- auto save
-    vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
-      pattern = { os.getenv 'HOME' .. '/.local/share/chezmoi/*' },
+    vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+      pattern = { os.getenv("HOME") .. "/.local/share/chezmoi/*" },
       callback = function()
-        vim.schedule(require('chezmoi.commands.__edit').watch)
+        vim.schedule(require("chezmoi.commands.__edit").watch)
       end,
     })
 
-    vim.api.nvim_create_autocmd('LspAttach', {
+    vim.api.nvim_create_autocmd("LspAttach", {
       callback = function(_)
-        vim.keymap.set('n', '<leader>cz', require('telescope').extensions.chezmoi.find_files, { desc = 'chezmoi' })
+        vim.keymap.set(
+          "n",
+          "<leader>C",
+          require("telescope").extensions.chezmoi.find_files,
+          { desc = "[C]hezmoi" }
+        )
       end,
     })
   end,
