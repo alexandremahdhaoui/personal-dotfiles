@@ -30,7 +30,7 @@ return {
       callback = function(_)
         vim.keymap.set(
           "n",
-          "<leader>C",
+          "<leader>z",
           require("telescope").extensions.chezmoi.find_files,
           { desc = "[C]hezmoi" }
         )

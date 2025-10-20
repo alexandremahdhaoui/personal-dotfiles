@@ -335,6 +335,29 @@ require('lazy').setup({
         },
 
         config = function()
+            local h_pct = 0.90
+            local w_pct = 0.80
+            local w_limit = 75
+            local standard_setup = {
+                borderchars = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+                preview = { hide_on_startup = true },
+                layout_strategy = 'vertical',
+                layout_config = {
+                    vertical = {
+                        mirror = true,
+                        prompt_position = 'top',
+                        width = function(_, cols, _)
+                            return math.min(math.floor(w_pct * cols), w_limit)
+                        end,
+                        height = function(_, _, rows)
+                            return math.floor(rows * h_pct)
+                        end,
+                        preview_cutoff = 10,
+                        preview_height = 0.4,
+                    },
+                },
+            }
+
             -- Telescope is a fuzzy finder that comes with a lot of different things that
             -- it can fuzzy find! It's more than just a "file finder", it can search
             -- many different aspects of Neovim, your workspace, LSP, and more!
@@ -357,20 +380,29 @@ require('lazy').setup({
             -- [[ Configure Telescope ]]
             -- See `:help telescope` and `:help telescope.setup()`
             require('telescope').setup {
-                -- You can put your default mappings / updates / etc. in here
-                --  All the info you're looking for is in `:help telescope.setup()`
-                --
-                -- defaults = {
-                --   mappings = {
-                --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-                --   },
-                -- },
-                -- pickers = {}
+
+                -- aesthetic
+                defaults = vim.tbl_extend('error', standard_setup, {
+                    sorting_strategy = 'ascending',
+                    path_display = { "filename_first" },
+                    mappings = {
+                        n = {
+                            ['o'] = require('telescope.actions.layout').toggle_preview,
+                            ['<C-c>'] = require('telescope.actions').close,
+                        },
+                        i = {
+                            ['<C-o>'] = require('telescope.actions.layout').toggle_preview,
+                        },
+                    },
+                }),
+
                 extensions = {
                     ['ui-select'] = {
                         require('telescope.themes').get_dropdown(),
                     },
                 },
+
+
             }
 
             -- Enable Telescope extensions if they are installed

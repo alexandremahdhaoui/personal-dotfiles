@@ -18,6 +18,12 @@ return {
 			},
 		},
 
+		-- Prompt Library
+		-- https://codecompanion.olimorris.dev/usage/introduction
+		-- https://codecompanion.olimorris.dev/configuration/prompt-library
+		-- https://codecompanion.olimorris.dev/extending/workflows#how-they-work
+		prompt_library = require("custom.prompts.coolprompt"),
+
 		-- Extensions
 		extensions = {
 			mcphub = {
@@ -39,7 +45,7 @@ return {
 		vim.keymap.set("n", "<leader>ca", "<cmd>CodeCompanionActions<cr>", { desc = "[A]ction" })
 		vim.keymap.set("n", "<leader>cc", "<cmd>CodeCompanionChat Toggle<cr>", { desc = "[C]hat" })
 		vim.keymap.set("n", "<leader>co", function()
-			require("codecompanion").prompt("")
+			require("codecompanion").actions("Open chats...")
 		end, { desc = "[O]pen chats", noremap = true, silent = true })
 
 		vim.keymap.set({ "n", "v" }, "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
@@ -52,19 +58,13 @@ return {
 		)
 	end,
 
-	-- Prompt Library
-	-- https://codecompanion.olimorris.dev/usage/introduction
-	-- https://codecompanion.olimorris.dev/configuration/prompt-library
-	-- https://codecompanion.olimorris.dev/extending/workflows#how-they-work
-	-- prompt_library = require("private_dot_config.nvim.lua.custom.plugins.cc.prompts"),
-
 	-- display
 	display = {
 		action_palette = {
 			width = 95,
 			height = 10,
 			prompt = "Prompt ",         -- Prompt used for interactive LLM calls
-			provider = "default",       -- Can be "default", "telescope", "fzf_lua", "mini_pick" or "snacks". If not specified, the plugin will autodetect installed providers.
+			provider = "snacks",        -- Can be "default", "telescope", "fzf_lua", "mini_pick" or "snacks". If not specified, the plugin will autodetect installed providers.
 			opts = {
 				show_default_actions = true, -- Show the default actions in the action palette?
 				show_default_prompt_library = true, -- Show the default prompt library in the action palette?
@@ -86,6 +86,7 @@ return {
 			build = "npm install -g mcp-hub@latest", -- Installs `mcp-hub` node binary globally
 			config = function()
 				require("mcphub").setup()
+				vim.keymap.set("n", "<leader>mcp", "<cmd>MCPHub<cr>", { desc = "[MCP]Hub" })
 			end,
 		},
 
@@ -99,7 +100,7 @@ return {
 				local diff = require("mini.diff")
 				diff.setup({
 					-- Disabled by default
-					source = diff.gen_source.none(),
+					source = diff.gen_source.git(),
 				})
 			end,
 		},
