@@ -26,15 +26,6 @@ return {
       end,
     })
 
-    vim.api.nvim_create_autocmd("LspAttach", {
-      callback = function(_)
-        vim.keymap.set(
-          "n",
-          "<leader>z",
-          require("telescope").extensions.chezmoi.find_files,
-          { desc = "[C]hezmoi" }
-        )
-      end,
-    })
+    vim.keymap.set("n", "<leader>z", require("telescope").extensions.chezmoi.find_files, { desc = "Che[z]moi" })
   end,
 }

@@ -5,3 +5,7 @@ nvim
 
 spell/
 lazy-lock.json
+
+.tmp*
+.gemini/*
+GEMINI.md
