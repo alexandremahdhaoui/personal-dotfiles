@@ -336,14 +336,14 @@ require('lazy').setup({
 
         config = function()
             local h_pct = 0.90
-            local w_pct = 0.80
-            local w_limit = 75
+            local w_pct = 0.90
+            local w_limit = 200
             local standard_setup = {
                 borderchars = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
-                preview = { hide_on_startup = true },
-                layout_strategy = 'vertical',
+                preview = { hide_on_startup = false },
+                layout_strategy = 'horizontal',
                 layout_config = {
-                    vertical = {
+                    horizontal = {
                         mirror = true,
                         prompt_position = 'top',
                         width = function(_, cols, _)
@@ -353,7 +353,7 @@ require('lazy').setup({
                             return math.floor(rows * h_pct)
                         end,
                         preview_cutoff = 10,
-                        preview_height = 0.4,
+                        preview_width = 0.55,
                     },
                 },
             }

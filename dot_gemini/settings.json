@@ -1,0 +1,38 @@
+{
+  "general": {
+    "preferredEditor": "neovim",
+    "vimMode": true,
+    "checkpointing": {
+      "enabled": true
+    }
+  },
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "output": {
+    "format": "text"
+  },
+  "ui": {
+    "showStatusInTitle": true,
+    "showCitations": true,
+    "showLineNumbers": true
+  },
+  "tools": {
+    "shell": {
+      "showColor": true
+    }
+  },
+  "mcpServers": {
+    "sequentialthinking": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "mcp/sequentialthinking"
+      ]
+    }
+  }
+}

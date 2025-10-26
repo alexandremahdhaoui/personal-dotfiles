@@ -1,2 +1,16 @@
 .idea
 nohup.out
+tags
+test.sh
+.luarc.json
+nvim
+
+spell/
+lazy-lock.json
+
+.tmp*
+.gemini/*
+GEMINI.md
+.ai/*
+.claude/*
+CLAUDE.md
