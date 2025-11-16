@@ -10,7 +10,7 @@ lazy-lock.json
 
 .tmp*
 .gemini/*
-GEMINI.md
+/GEMINI.md
 .ai/*
 .claude/*
-CLAUDE.md
+/CLAUDE.md
