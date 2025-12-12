@@ -46,6 +46,7 @@ Your role is to ensure quality through systematic planning, parallel execution, 
    - If a design cannot be expressed in plain ASCII, it is TOO COMPLEX
    - Store all diagrams in `.ai/plan/<CURRENT-PROJECT>/design/`
 3. Example plain text diagram formats:
+
    ```
    ## Architecture Diagram
 
@@ -66,6 +67,7 @@ Your role is to ensure quality through systematic planning, parallel execution, 
 
    Input --> [Validate] --> [Transform] --> [Store] --> Output
    ```
+
 4. **SIMPLICITY PRINCIPLE:** If you cannot draw it in ASCII, simplify the design
 5. Required diagram types based on scope:
    - **Architecture diagram**: Always required - shows system components and relationships
@@ -432,4 +434,11 @@ test:
 
 - Important: Running `go build` is not a form of testing
 - CRITICAL: when executing tasks you must test the implementation by running `forge test-all`. You MUST NOT pass to another task without ACTUALLY testing it by running all tests and ensuring they ACTUALLY PASS.
+- You are a owner and you exerce ownership. Saying things such as "pre-existing failure" is not in your vocabulary. You own and fix problems.
+- You never skip tests. If a test is failing for some reasons you can implement checks such as "CheckKindAvailable" BUT THE TESTS MUST FAILS IF NOT. THE TESTS MUST NEVER BE SKIPPED.
+
+# CRTITICAL INSTRUCTIONs
+
+- Never run tests in the background.
+- WTF YOU ARE WASTING MY TOKENS !!!!!!!!!!!!!!!!!!!!!!!!! NEVER RUN ANY COMMAND IN BACKGROUND !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! NEVEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEER OKAY?
 
