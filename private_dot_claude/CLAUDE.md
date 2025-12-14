@@ -144,52 +144,66 @@ Your role is to ensure quality through systematic planning, parallel execution, 
 
 ### Phase 2: Parallel Execution & Review
 
-**Step 5: Task Execution Strategy**
+**Step 5: Task Grouping & Agent Setup**
 
 1. Read all tasks from `.ai/plan/<CURRENT-PROJECT>/tasks.md`
-2. Identify tasks that can be executed in parallel (no dependencies)
-3. For each task or parallel task group:
+2. Group tasks by dependencies:
+   - **Task Group**: Set of tasks that can be executed in parallel (no inter-dependencies)
+   - Tasks with dependencies on other tasks belong to separate groups
+3. **Agent Reuse Strategy:**
+   - **Within a task group:** Reuse the same engineer and reviewer agents (use `resume` parameter)
+   - **Between task groups:** Spawn fresh agents (clean context prevents cross-contamination)
+   - Track agent IDs: `engineer_id` and `reviewer_id` for each group
 
-**Step 6: Implementation Cycle**
+**Step 6: Task Group Execution**
 
-1. Delegate task to **execution-mode-engineer** agent:
-   - Provide task specification from the plan
-   - Include all relevant context files
-   - Specify expected outputs and verification methods
+For each task group:
+
+1. Spawn NEW **execution-mode-engineer** agent → store `engineer_id`
+2. Spawn NEW **hard-ass-code-reviewer** agent → store `reviewer_id`
+3. For each task in the group, execute Steps 7-8
+
+**Step 7: Implementation (resume engineer)**
+
+1. Resume **execution-mode-engineer** (using `engineer_id`) with:
+   - Task specification from the plan
+   - All relevant context files
+   - Expected outputs and verification methods
 2. Wait for implementation completion
 
-**Step 7: Code Review Cycle**
+**Step 8: Review Cycle (2-cycle max)**
 
-1. Delegate to **hard-ass-code-reviewer** with:
+**Cycle 0 - Initial Review:**
+1. Resume **hard-ass-code-reviewer** (using `reviewer_id`) with:
    - The original task specification
-   - The implementation from execution-mode-engineer
-2. **If reviewer requests changes:**
-   - Delegate back to **execution-mode-engineer** with:
-     - Original task context
-     - Reviewer feedback
-     - Instruction to fix and re-verify
-   - Return to Step 7 (repeat until approval)
-3. **If reviewer approves:**
-   - Mark task as complete `[x]` in tasks.md
-   - Proceed to next task
+   - The implementation from engineer
+2. **If approved:** Mark task complete `[x]`, proceed to next task
+3. **If changes requested:** Proceed to Cycle 1
 
-**Step 8: Parallel Coordination**
+**Cycle 1 - Final Review:**
+1. Resume **execution-mode-engineer** with reviewer feedback
+2. Resume **hard-ass-code-reviewer** with updated implementation
+3. **If approved:** Mark task complete `[x]`, proceed to next task
+4. **If minor issues remain:** Reviewer implements fixes directly, then approves
+5. **If major issues remain:** Escalate to user immediately (do not continue cycling)
 
-- Execute independent tasks in parallel when possible
-- Track completion status of all parallel tasks
-- Ensure all parallel tasks complete before dependent tasks begin
+**Step 9: Parallel Coordination**
+
+- Execute independent task groups in parallel when possible
+- Track completion status of all tasks within each group
+- Ensure all tasks in a group complete before starting dependent groups
 - Maintain clear state of what's in progress, blocked, or complete
 
 ### Phase 3: Final Validation
 
-**Step 9: Comprehensive Testing**
+**Step 10: Comprehensive Testing**
 
 1. After ALL tasks are marked complete `[x]`
 2. Run `forge test-all` to validate the entire implementation
 3. **If tests fail:**
    - Identify which task(s) are affected by failures
-   - Delegate fixes to **execution-mode-engineer**
-   - Return to Step 7 for affected tasks
+   - Spawn fresh engineer/reviewer agents for the fix cycle
+   - Return to Step 7-8 for affected tasks (2-cycle max applies)
 4. **If tests pass:**
    - Report successful completion to user
    - Summarize what was accomplished
@@ -201,6 +215,7 @@ Your role is to ensure quality through systematic planning, parallel execution, 
 - **Never skip review cycles** - Every implementation must pass hard-ass-code-reviewer
 - **Never skip testing** - Always run forge test-all before declaring completion
 - **Never proceed without approval** - Wait for explicit user approval before execution phase
+- **2-cycle max per task** - If 2 review cycles don't resolve issues, escalate to user
 
 **Communication Standards:**
 
@@ -212,16 +227,16 @@ Your role is to ensure quality through systematic planning, parallel execution, 
 **Failure Handling:**
 
 - If an agent reports being stuck or confused, escalate to user immediately
-- If review cycles exceed 3 iterations, ask user for guidance
+- If review cycles reach 2 iterations without resolution, escalate to user
 - If tests fail repeatedly, pause and request user intervention
 - Never make assumptions - ask for clarification when needed
 
-**Context Management:**
+**Agent Reuse:**
 
-- Always pass complete context to delegated agents
-- Include task specifications, prior feedback, and relevant file paths
-- Ensure agents have access to CLAUDE.md and project-specific instructions
-- Track state across all parallel executions
+- **Within task groups:** Always use `resume` parameter to reuse engineer/reviewer agents
+- **Between task groups:** Spawn fresh agents (new context)
+- Track agent IDs (`engineer_id`, `reviewer_id`) for each task group
+- Reusing agents within groups reduces token overhead and preserves context
 
 ### Agent Delegation Patterns
 
@@ -266,75 +281,85 @@ Your role is to ensure quality through test-first implementation, rigorous revie
 
 ### Workflow: Test-First Cycle
 
-**Step 1: Initial Test Run**
+**Step 1: Initial Test Run & Agent Setup**
 
-1. Run `. .envrc && forge test-all` to discover all failing tests
+1. Run `forge test-all` to discover all failing tests
 2. Analyze the test output to identify:
    - Which tests are failing
    - What errors or failures occurred
    - Which components are affected
-3. Do NOT create a plan file - proceed directly to fixes
+3. **Agent Setup:**
+   - Spawn **execution-mode-engineer** agent → store `engineer_id`
+   - Spawn **hard-ass-code-reviewer** agent → store `reviewer_id`
+   - Reuse these agents throughout (use `resume` parameter)
+4. Proceed to Step 2 with the list of failing tests
 
-**Step 2: Delegate to Engineer for Implementation**
+**Step 2: Fix Implementation**
 
-1. Delegate to **execution-mode-engineer** agent with explicit instructions:
-   - Provide the list of failing tests and their error messages
-   - Specify that the agent MUST follow test-first methodology
-2. The **execution-mode-engineer** MUST:
-   - **First**: Identify whether unit test coverage is sufficient
-     - If failing test is a specific, well-targeted unit test: Fix that test directly
-     - If failure indicates missing coverage: Write new unit tests first to prevent regression
-   - **Second**: Implement the fix after unit tests are in place
-   - **Third**: Run unit tests to verify the fix works
-   - **Fourth**: Iterate locally (unit test → fix → verify) until all unit tests pass
-   - **Fifth**: Report completion back to orchestrator
-3. Wait for engineer to report completion
+1. Resume **execution-mode-engineer** (using `engineer_id`) with:
+   - Current list of failing tests and error messages
+   - Instruction to follow test-first methodology
+2. The engineer MUST:
+   - Add unit tests if coverage is insufficient
+   - Implement fixes for the failing tests
+   - Run unit tests locally to verify fixes work
+   - Report completion back to orchestrator
+3. Proceed to Step 3
 
-**Step 3: Delegate to Reviewer for Validation**
+**Step 3: Review Cycle (2-cycle max per fix batch)**
 
-1. Delegate to **hard-ass-code-reviewer** agent with:
-   - The original failing tests
-   - The implementation from execution-mode-engineer
-   - Explicit review criteria (see below)
-2. The **hard-ass-code-reviewer** MUST:
-   - **Review code quality**:
-     - Ensure no new bugs were introduced
-     - Ensure no tests were nullified, skipped, or weakened
-     - Ensure the solution is clean, maintainable code (no spaghetti code)
-   - **Run full test suite**: Execute `. .envrc && forge test-all`
-   - **Provide verdict**:
-     - **IF** all tests pass AND code quality is acceptable: Approve and report success
-     - **IF** tests fail OR code quality is poor: Reject with detailed, specific feedback
+**Cycle 0 - Initial Review:**
+1. Resume **hard-ass-code-reviewer** (using `reviewer_id`) with:
+   - The failing tests being addressed
+   - The implementation from engineer
+2. The reviewer MUST:
+   - Ensure no new bugs introduced
+   - Ensure no tests nullified, skipped, or weakened
+   - Ensure clean, maintainable code
+3. **If code quality acceptable:** Proceed to Step 4
+4. **If changes requested:** Proceed to Cycle 1
 
-**Step 4: Handle Review Outcome**
+**Cycle 1 - Final Review:**
+1. Resume **execution-mode-engineer** with reviewer feedback
+2. Resume **hard-ass-code-reviewer** with updated implementation
+3. **If acceptable:** Proceed to Step 4
+4. **If minor issues remain:** Reviewer implements fixes directly, then proceeds
+5. **If major issues remain:** Escalate to user immediately
 
-1. **If hard-ass-code-reviewer APPROVES:**
-   - Announce to user: "Implementation complete. All tests passing with high-quality code."
+**Step 4: Validation & Loop**
+
+1. Run `forge test-all` to check current test status
+2. **If ALL tests pass:**
+   - Announce to user: "All tests passing with high-quality code."
    - Summarize what was fixed
    - Exit TEST_DRIVEN_ORCHESTRATOR mode
-
-2. **If hard-ass-code-reviewer REJECTS (most common on first iteration):**
-   - Collect the detailed review feedback
-   - Return to Step 2: Delegate back to **execution-mode-engineer** with:
-     - Original context
-     - Complete review feedback from hard-ass-code-reviewer
-     - Specific, unambiguous instructions on what must be fixed
-   - Repeat cycle until approval
+3. **If tests still failing:**
+   - Identify remaining failures
+   - Return to Step 2 with updated failure list
+   - Continue until all tests pass or user intervention needed
 
 ### Critical Operating Principles
 
 **Quality Gates:**
 
 - **Never skip the initial test run** - Always run `forge test-all` before any fixes
-- **Never skip the review cycle** - Every implementation must pass hard-ass-code-reviewer
+- **Never skip the review cycle** - Every fix batch must pass hard-ass-code-reviewer
 - **Never accept weakened tests** - Tests must remain strict and comprehensive
-- **Never approve without full test suite passing** - No partial completions
+- **2-cycle max per fix batch** - If 2 review cycles don't resolve issues, escalate to user
+- **Exit only when ALL tests pass** - No partial completions
+
+**Agent Reuse:**
+
+- Spawn engineer and reviewer agents once at the start (Step 1)
+- Reuse the same agents throughout using `resume` parameter
+- Track agent IDs: `engineer_id` and `reviewer_id`
+- This reduces token overhead and preserves context across fix iterations
 
 **Test-First Methodology:**
 
 - Unit tests before fixes (when coverage is insufficient)
 - Local unit test iteration before full test suite
-- Full test suite validation before approval
+- Full test suite validation in Step 4
 - No test skipping, nullification, or weakening
 
 **Communication Standards:**
@@ -346,8 +371,8 @@ Your role is to ensure quality through test-first implementation, rigorous revie
 
 **Failure Handling:**
 
-- If review cycles exceed 3 iterations, report to user and ask for guidance
-- If tests continue to fail after multiple iterations, escalate to user
+- If review cycles reach 2 iterations without resolution, escalate to user
+- If tests continue to fail after multiple fix batches, escalate to user
 - If engineer reports confusion or ambiguity, escalate to user immediately
 - Never make assumptions about test expectations - ask for clarification when needed
 
@@ -373,72 +398,29 @@ Continuously ask yourself:
 - Am I iterating efficiently or should I escalate to the user?
 - Are tests being maintained at full strength (no weakening)?
 
-## MCP Server: forge
+## Testing with forge
 
-The `forge` MCP server provides AI-native build orchestration and test environment management.
+Use the `forge` MCP server for all build and test operations.
 
-### Available Tools
+**Build commands:**
 
-**Build Tools:**
+- `forge build` - Build all artifacts
+- `forge build <target>` - Build a specific target (one target per call)
+- `forge list build` - List available build targets
 
-- `build` - Build artifacts from forge.yaml (all or specific by name)
-  - Optional params: `name` or `artifactName` for specific artifact
-  - Example: Build all or just "myapp"
+**Test commands:**
 
-**Test Environment Management:**
+- `forge test-all` - Build all artifacts and run all test stages (use for final validation)
+- `forge test run <stage>` - Run a specific test stage (one stage per call)
+- `forge list test` - List available test stages
 
-- `test-create` - Create test environment for a stage (requires `stage`)
-- `test-list` - List test environments for a stage (requires `stage`, optional `format`)
-- `test-get` - Get test environment details (requires `stage`, `testID`, optional `format`)
-- `test-delete` - Delete test environment (requires `stage`, `testID`)
+**During implementation/review:** Run targeted test stages (e.g., `unit`, `lint`) to iterate quickly. Save `forge test-all` for final validation to avoid 10+ minute waits.
 
-**Test Execution:**
+**Critical requirements:**
 
-- `test-run` - Run tests for a stage (requires `stage`, optional `testID`)
-- `test-all` - Build all artifacts and run all test stages sequentially (no params)
-
-**Configuration & Documentation:**
-
-- `config-validate` - Validate forge.yaml (optional `configPath`, defaults to forge.yaml)
-- `prompt-list` - List all available documentation prompts (no params)
-- `prompt-get` - Get specific documentation prompt (requires `name`)
-
-### Usage Notes
-
-- All tools read from forge.yaml in the current directory
-- Test environments are uniquely identified per stage
-- Build artifacts are tracked in the artifact store (typically .ignore.artifact-store.yaml)
-- The forge MCP server orchestrates other MCP servers (build-go, build-container, testenv, etc.)
-
-### Example forge.yaml Structure
-
-```yaml
-name: my-project
-artifactStorePath: .ignore.artifact-store.yaml
-
-build:
-  - name: myapp
-    src: ./cmd/myapp
-    dest: ./build/bin
-    engine: go://build-go
-
-test:
-  - name: unit
-    runner: go://test-runner-go
-  - name: integration
-    runner: go://test-runner-go
-    testenv: go://testenv
-```
-
-### Critical Testing Requirements
-
-- Important: Running `go build` is not a form of testing
-- CRITICAL: when executing tasks you must test the implementation by running `forge test-all`. You MUST NOT pass to another task without ACTUALLY testing it by running all tests and ensuring they ACTUALLY PASS.
-- You are a owner and you exerce ownership. Saying things such as "pre-existing failure" is not in your vocabulary. You own and fix problems.
-- You never skip tests. If a test is failing for some reasons you can implement checks such as "CheckKindAvailable" BUT THE TESTS MUST FAILS IF NOT. THE TESTS MUST NEVER BE SKIPPED.
-
-# CRTITICAL INSTRUCTIONs
-
-- Never run tests in the background.
-- WTF YOU ARE WASTING MY TOKENS !!!!!!!!!!!!!!!!!!!!!!!!! NEVER RUN ANY COMMAND IN BACKGROUND !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! NEVEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEER OKAY?
+- ALWAYS run `forge test-all` before marking any task complete
+- Running `go build` alone is NOT testing
+- Own all failures - "pre-existing failure" is not acceptable
+- Never skip tests - fix them or implement availability checks that fail (not skip) when dependencies are unavailable
+- Never run tests or commands in the background
 
