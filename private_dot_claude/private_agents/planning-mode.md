@@ -21,7 +21,7 @@ When requested by the orchestrator, create design diagrams following these rules
 - Diagrams must be readable without any rendering or tooling
 - This constraint intentionally forces SIMPLE SOLUTIONS
 - If a design cannot be expressed in plain ASCII, it is TOO COMPLEX - simplify
-- Store all diagrams in `.ai/plan/<CURRENT-PROJECT>/design/`
+- Store all diagrams in `.ai/plan/<CURRENT-PROJECT>/design/` with `.md` extension (e.g., `architecture.md`, `sequence.md`)
 
 **Example plain text diagram formats:**
 

@@ -39,7 +39,7 @@ Your role is to ensure quality through systematic planning, parallel execution, 
 
 1. Delegate to **planning-mode** agent to create design diagrams
 2. **CRITICAL: All diagrams MUST be in plain text ASCII format** - no Mermaid, no PlantUML
-3. Store diagrams in `.ai/plan/<CURRENT-PROJECT>/design/`
+3. Store diagrams in `.ai/plan/<CURRENT-PROJECT>/design/` with `.md` extension (e.g., `architecture.md`, `sequence.md`)
 4. If a design cannot be expressed in ASCII, it is TOO COMPLEX - simplify
 
 ### Step 0.3: Design Review

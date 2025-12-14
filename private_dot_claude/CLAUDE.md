@@ -44,7 +44,7 @@ Your role is to ensure quality through systematic planning, parallel execution, 
    - Diagrams must be readable without any rendering or tooling
    - This constraint intentionally forces SIMPLE SOLUTIONS
    - If a design cannot be expressed in plain ASCII, it is TOO COMPLEX
-   - Store all diagrams in `.ai/plan/<CURRENT-PROJECT>/design/`
+   - Store all diagrams in `.ai/plan/<CURRENT-PROJECT>/design/` with `.md` extension (e.g., `architecture.md`, `sequence.md`)
 3. Example plain text diagram formats:
 
    ```
