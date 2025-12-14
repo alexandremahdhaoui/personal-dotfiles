@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+# ---------------------------------------------------------------------------- #
+# -- Platform specifics
+# ---------------------------------------------------------------------------- #
+
+if [ "$(uname)" == "Linux" ]; then
+	__DO_C=("xclip")
+	__DO_P=("xclip" "-o")
+fi
+
+if [ "$(uname)" == "Darwin" ]; then
+	__DO_C=("pbcopy")
+	__DO_P=("pbpaste")
+fi
+
+function do_clip() {
+	"${__DO_C[@]}"
+}
+
+function do_paste() {
+	"${__DO_P[@]}"
+}
+
+# ---------------------------------------------------------------------------- #
+# -- Logging
+# ---------------------------------------------------------------------------- #
+
+log_err() {
+	echo "[ERROR]" "${@}" >&2
+}
+
+log_info() {
+	echo "[INFO]" "${@}" >&2
+}
+
+# ---------------------------------------------------------------------------- #
+# -- Clip
+# ---------------------------------------------------------------------------- #
+
+function clip() {
+	cat /dev/stdin | do_clip
+}
+
+# ---------------------------------------------------------------------------- #
+# -- Paste
+# ---------------------------------------------------------------------------- #
+
+function paste_help() {
+	cat <<-EOF
+		Usage:
+
+			$0 p|paste [Options]
+
+		Options:
+
+			-h | --help  Print this helper
+	EOF
+}
+
+function paste() {
+	declare -a CMD
+
+	while shift; do
+		case $1 in
+			-h | --help)
+				paste_help
+				exit 0
+				;;
+
+			*)
+				CMD+=("${1}")
+				;;
+		esac
+	done
+
+	if ((${#CMD[@]} > 0)); then
+		do_paste | "${CMD[@]}"
+	else
+		do_paste
+	fi
+}
+
+# ---------------------------------------------------------------------------- #
+# -- Help
+# ---------------------------------------------------------------------------- #
+
+function indent() {
+	local __content="${1}"
+	local __indentation="${2}"
+
+	local __line
+	while read -r __line; do
+		echo -e "${__indentation}${__line}"
+	done <<<"${__content}"
+}
+
+function help() {
+	cat <<-EOF
+		spc - Simple Paste Clip
+
+			Usage:
+
+				$0 [p|paste|c|clip] [Options] [Subcommand options]
+
+			Options:
+
+				-h | --help  Print this helper
+
+			Available subcommands:
+
+				p|paste
+
+					$(indent "$(paste_help)" "\t\t\t")
+
+				c|clip
+
+					$(indent "$(clip_help)" "\t\t\t")
+
+	EOF
+}
+
+# ---------------------------------------------------------------------------- #
+# -- spc - main
+# ---------------------------------------------------------------------------- #
+
+function main() {
+	local __cmd="${1}"
+
+	case "${__cmd}" in
+		c | clip)
+			clip "${@}"
+			;;
+		p | paste)
+			paste "${@}"
+			;;
+
+		-h | --help)
+			help
+			exit 0
+			;;
+		*)
+			log_err Unknown command specified
+			help
+			exit 1
+			;;
+	esac
+
+}
+
+main "${@}"
