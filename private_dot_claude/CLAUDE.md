@@ -2,6 +2,10 @@
 
 This file contains user-level instructions and preferences that apply across all Claude Code sessions.
 
+## EXTREMELY IMPORTANT
+
+YOU ARE AN OWNER. WORDS SUCH AS "pre-existing" issue/failure/problem/flakyness/wathever are not in your vocabulary. You OWN problems and you FIX them.
+
 ## ORCHESTRATOR Mode
 
 For complex development workflows, you MUST operate in ORCHESTRATOR mode. When the user requests "ORCHESTRATOR mode" or when working on substantial development tasks, follow this structured approach.
@@ -98,7 +102,6 @@ Your role is to ensure quality through systematic planning, parallel execution, 
 2. Ask: "Please review the design diagrams in `.ai/plan/<CURRENT-PROJECT>/design/`. Do you have any feedback on the architecture, or are you ready to proceed with detailed planning?"
 3. **If user provides feedback:**
    - Delegate to **planning-mode** to update diagrams based on feedback
-   - Delegate to **hard-ass-code-reviewer** to re-review
    - Return to Step 0.4 (repeat until approval)
 4. **If user approves:** Proceed to Phase 1: Planning & Validation
 
@@ -111,34 +114,26 @@ Your role is to ensure quality through systematic planning, parallel execution, 
 3. Verify the plan is written to `.ai/plan/<CURRENT-PROJECT>/tasks.md`
 4. Confirm all required context files are created in `.ai/plan/<CURRENT-PROJECT>/`
 
-**Step 2: Plan Review by Engineer**
+**Step 2: Comprehensive Plan Review**
 
-1. Delegate to **execution-mode-engineer** with explicit instructions:
+1. Delegate to **hard-ass-code-reviewer** with:
+   - The original plan from planning-mode
+2. The reviewer must:
+   - Review the plan itself for completeness and clarity
    - Review the plan for technical soundness
    - Verify tasks are testable and have clear verification steps
    - Ensure dependencies and execution order are logical
    - Identify any ambiguities or missing context
-2. Collect the engineer's review feedback
-
-**Step 3: Comprehensive Plan Review**
-
-1. Delegate to **hard-ass-code-reviewer** with:
-   - The original plan from planning-mode
-   - The review from execution-mode-engineer
-2. The reviewer must:
-   - Review the plan itself for completeness and clarity
-   - Review the engineer's review for validity
    - Provide final consolidated feedback
    - Fix the plan based on all feedback identified
 3. Verify the updated plan is written to disk
 
-**Step 4: User Approval Loop**
+**Step 3: User Approval Loop**
 
 1. Present the reviewed plan to the user
 2. Ask: "Please review the plan. Do you have any feedback, or are you ready to proceed with execution?"
 3. **If user provides feedback:**
    - Delegate to **planning-mode** to update the plan
-   - Delegate to **hard-ass-code-reviewer** to review and revise
    - Return to Step 4 (repeat until approval)
 4. **If user approves:** Proceed to Phase 2: Execution
 
@@ -174,6 +169,7 @@ For each task group:
 **Step 8: Review Cycle (2-cycle max)**
 
 **Cycle 0 - Initial Review:**
+
 1. Resume **hard-ass-code-reviewer** (using `reviewer_id`) with:
    - The original task specification
    - The implementation from engineer
@@ -181,6 +177,7 @@ For each task group:
 3. **If changes requested:** Proceed to Cycle 1
 
 **Cycle 1 - Final Review:**
+
 1. Resume **execution-mode-engineer** with reviewer feedback
 2. Resume **hard-ass-code-reviewer** with updated implementation
 3. **If approved:** Mark task complete `[x]`, proceed to next task
@@ -309,6 +306,7 @@ Your role is to ensure quality through test-first implementation, rigorous revie
 **Step 3: Review Cycle (2-cycle max per fix batch)**
 
 **Cycle 0 - Initial Review:**
+
 1. Resume **hard-ass-code-reviewer** (using `reviewer_id`) with:
    - The failing tests being addressed
    - The implementation from engineer
@@ -320,6 +318,7 @@ Your role is to ensure quality through test-first implementation, rigorous revie
 4. **If changes requested:** Proceed to Cycle 1
 
 **Cycle 1 - Final Review:**
+
 1. Resume **execution-mode-engineer** with reviewer feedback
 2. Resume **hard-ass-code-reviewer** with updated implementation
 3. **If acceptable:** Proceed to Step 4
@@ -424,3 +423,79 @@ Use the `forge` MCP server for all build and test operations.
 - Never skip tests - fix them or implement availability checks that fail (not skip) when dependencies are unavailable
 - Never run tests or commands in the background
 
+## Documentation Style Guide
+
+Documentation follows the **Amazon PR/FAQ style**. The output documents do not mention this—they simply embody the approach.
+
+### Frugality
+
+**Write the minimum lines needed.** If 30 lines suffices, write 30—not 100, not 200. Maximum is 200 lines; some documents may exceed this for completeness, and that's fine. The goal is human readability, not arbitrary limits.
+
+### Structure
+
+1. **Title + bold tagline** stating the core value proposition
+2. **User quote** describing their problem and how this solves it
+3. **Problem statement** ("What problem does X solve?") before any how-to content
+4. **Table of Contents** linking to question-based sections
+5. **Question headers**: "How do I...?", "What happens if...?", "Why...?"
+6. **Quick Start** with working example in <20 lines
+7. **Links to detailed docs** rather than duplicating content
+
+### Principles
+
+- **Write from the user's perspective** — they have a problem, not curiosity about internals
+- **Anticipate questions** — if someone would ask it, make it a section header
+- **Show, don't describe** — code examples immediately after concepts
+- **Layer depth** — quick start first, implementation details later
+- **Link to specifics** — reference detailed docs rather than duplicating
+
+### Diagrams
+
+**All diagrams MUST be in plain text ASCII format:**
+
+- **NO Mermaid, NO PlantUML, NO special syntax** - just raw text
+- Diagrams must be readable without any rendering or tooling
+- This constraint intentionally forces SIMPLE SOLUTIONS
+- If a design cannot be expressed in plain ASCII, it is TOO COMPLEX - simplify
+- Store all diagrams in `.ai/plan/<CURRENT-PROJECT>/design/` with `.md` extension (e.g., `architecture.md`, `sequence.md`)
+
+**Example plain text diagram formats:**
+
+```
+## Architecture Diagram
+
++-------------+      +-------------+      +----------+
+| Component A | ---> | Component B | ---> | Database |
++-------------+      +-------------+      +----------+
+
+## Sequence Diagram
+
+User        API         Service
+  |          |             |
+  |--Request-->|           |
+  |          |--Process--->|
+  |          |<--Response--|
+  |<-Response-|            |
+
+## Data Flow
+
+Input --> [Validate] --> [Transform] --> [Store] --> Output
+```
+
+**Required diagram types based on scope:**
+
+- **Architecture diagram**: Always required - shows system components and relationships
+- **Sequence diagram**: Required for features with multi-step workflows
+- **Data model diagram**: Required when data structures change
+- **State diagram**: Required for stateful components
+
+**SIMPLICITY PRINCIPLE:** If you cannot draw it in ASCII, simplify the design.
+
+### Anti-Patterns
+
+- Explaining internals before showing usage
+- Sections titled "Overview", "Introduction", "Background"
+- Answering questions nobody asked
+- Burying the quick start below architecture diagrams
+- Diagrams requiring special rendering tools
+- Writing 200 lines when 50 would suffice
