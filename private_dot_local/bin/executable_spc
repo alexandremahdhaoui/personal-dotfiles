@@ -42,6 +42,14 @@ log_info() {
 # -- Clip
 # ---------------------------------------------------------------------------- #
 
+function clip_help() {
+	cat <<-EOF
+		Usage:
+
+		    <any command> | $0 c|clip
+	EOF
+}
+
 function clip() {
 	cat /dev/stdin | do_clip
 }
@@ -54,31 +62,33 @@ function paste_help() {
 	cat <<-EOF
 		Usage:
 
-			$0 p|paste [Options]
+		    $0 p|paste [Options]
 
 		Options:
 
-			-h | --help  Print this helper
+		    -h | --help  Print this helper
 	EOF
 }
 
 function paste() {
 	declare -a CMD
 
-	while shift; do
-		case $1 in
-			-h | --help)
-				paste_help
-				exit 0
-				;;
+	if (("${#@}" > 1)); then
+		while shift; do
+			case "${1}" in
+				-h | --help)
+					paste_help
+					exit 0
+					;;
 
-			*)
-				CMD+=("${1}")
-				;;
-		esac
-	done
+				"") ;;
 
-	if ((${#CMD[@]} > 0)); then
+				*)
+					CMD+=("${1}")
+					;;
+			esac
+		done
+
 		do_paste | "${CMD[@]}"
 	else
 		do_paste
@@ -103,23 +113,23 @@ function help() {
 	cat <<-EOF
 		spc - Simple Paste Clip
 
-			Usage:
+		    Usage:
 
-				$0 [p|paste|c|clip] [Options] [Subcommand options]
+		        $0 [p|paste|c|clip] [Options] [Subcommand options]
 
-			Options:
+		    Options:
 
-				-h | --help  Print this helper
+		        -h | --help  Print this helper
 
-			Available subcommands:
+		    Available subcommands:
 
-				p|paste
+		        p|paste
 
-					$(indent "$(paste_help)" "\t\t\t")
+		$(indent "$(paste_help)" "            ")
 
-				c|clip
+		        c|clip
 
-					$(indent "$(clip_help)" "\t\t\t")
+		$(indent "$(clip_help)" "            ")
 
 	EOF
 }
@@ -129,7 +139,7 @@ function help() {
 # ---------------------------------------------------------------------------- #
 
 function main() {
-	local __cmd="${1}"
+	local __cmd="${1:-}"
 
 	case "${__cmd}" in
 		c | clip)
@@ -149,7 +159,6 @@ function main() {
 			exit 1
 			;;
 	esac
-
 }
 
 main "${@}"
