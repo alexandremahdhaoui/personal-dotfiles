@@ -12,5 +12,6 @@ lazy-lock.json
 .gemini/*
 /GEMINI.md
 .ai/*
+.forge-ai/*
 .claude/*
 /CLAUDE.md
